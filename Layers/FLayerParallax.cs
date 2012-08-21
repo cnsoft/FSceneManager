@@ -13,6 +13,14 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+public enum ScrollDirection
+{
+	Up,
+	Down,
+	Left,
+	Right
+};
+
 public class FLayerParallax : FLayer
 {
 	protected FSprite mBackground;
@@ -34,13 +42,30 @@ public class FLayerParallax : FLayer
 		set { mSpeed = value; }
 	}
 	
-	public FLayerParallax(FScene _parent, string _backgroundPath, string _background2Path) : base(_parent)
+	protected ScrollDirection mScrollDirection;
+	public ScrollDirection Direction
+	{
+		get { return mScrollDirection; }
+		set { mScrollDirection = value; }
+	}
+	
+	public FLayerParallax(FScene _parent, ScrollDirection _direction, string _backgroundPath, string _background2Path) : base(_parent)
 	{	
 		mBackground = new FSprite(_backgroundPath);
 		this.AddChild(mBackground);
 		mBackground2 = new FSprite(_background2Path);
 		this.AddChild(mBackground2);
-		mBackground2.x = mBackground.width;
+		
+		mScrollDirection = _direction;
+		
+		if(mScrollDirection == ScrollDirection.Left)
+			mBackground2.x = mBackground.width;
+		else if(mScrollDirection == ScrollDirection.Right)
+			mBackground2.x = mBackground.x - mBackground.width;
+		else if(mScrollDirection == ScrollDirection.Up)
+			mBackground2.y = mBackground.y - mBackground.height;
+		else if(mScrollDirection == ScrollDirection.Down)
+			mBackground2.y = mBackground.y + mBackground.height;
 		
 		mSpeed = 1;
 	}
@@ -52,6 +77,18 @@ public class FLayerParallax : FLayer
 		
 		base.HandleUpdate();
 		
+		if(mScrollDirection == ScrollDirection.Left)
+			ScrollLeft();
+		else if(mScrollDirection == ScrollDirection.Right)
+			ScrollRight();
+		else if(mScrollDirection == ScrollDirection.Up)
+			ScrollUp();
+		else if(mScrollDirection == ScrollDirection.Down)
+			ScrollDown();
+	}
+	
+	private void ScrollLeft()
+	{
 		mBackground.x -= mSpeed;
 		mBackground2.x -= mSpeed;
 		
@@ -59,5 +96,38 @@ public class FLayerParallax : FLayer
 			mBackground.x = mBackground2.x + mBackground2.width;
 		if(mBackground2.x < 0 - mBackground2.width)
 			mBackground2.x = mBackground.x + mBackground.width;
+	}
+	
+	private void ScrollRight()
+	{
+		mBackground.x += mSpeed;
+		mBackground2.x += mSpeed;
+		
+		if(mBackground.x > mBackground.width)
+			mBackground.x = mBackground2.x - mBackground2.width;
+		if(mBackground2.x > mBackground2.width)
+			mBackground2.x = mBackground.x - mBackground.width;
+	}
+	
+	private void ScrollUp()
+	{
+		mBackground.y += mSpeed;
+		mBackground2.y += mSpeed;
+		
+		if(mBackground.y > mBackground.height)
+			mBackground.y = mBackground2.y - mBackground2.height;
+		if(mBackground2.y > mBackground2.height)
+			mBackground2.y = mBackground.y - mBackground.height;
+	}
+	
+	private void ScrollDown()
+	{
+		mBackground.y -= mSpeed;
+		mBackground2.y -= mSpeed;
+		
+		if(mBackground.y < 0 - mBackground.height)
+			mBackground.y = mBackground2.y + mBackground2.height;
+		if(mBackground2.y < 0 - mBackground2.height)
+			mBackground2.y = mBackground.y + mBackground.height;
 	}
 }

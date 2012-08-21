@@ -22,7 +22,7 @@ public class FScene : FStage
 		set { mPaused = value; }
 	}
 	
-	public FScene ()
+	public FScene () : base("")
 	{
 		
 	}

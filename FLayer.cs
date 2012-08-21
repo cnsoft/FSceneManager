@@ -33,21 +33,14 @@ public class FLayer : FContainer, FMultiTouchableInterface
 	{
 		base.HandleAddedToStage();
 		Futile.touchManager.AddMultiTouchTarget(this);
-		Futile.instance.SignalUpdate += HandleUpdate;
-		Futile.instance.SignalResize += HandleResize;	
+		Futile.instance.SignalUpdate += HandleUpdate;	
 	}
 	
 	override public void HandleRemovedFromStage()
 	{
 		Futile.touchManager.RemoveMultiTouchTarget(this);
 		Futile.instance.SignalUpdate -= HandleUpdate;
-		Futile.instance.SignalResize -= HandleResize;
 		base.HandleRemovedFromStage();	
-	}
-	
-	protected void HandleResize(bool wasOrientationChange)
-	{
-			
 	}
 	
 	virtual protected void HandleUpdate ()
