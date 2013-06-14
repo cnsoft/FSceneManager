@@ -3,13 +3,19 @@ FSceneManager
 
 SceneManager for Futile, a Unity framework.
 
+todo
+-------------
+[] Complete loading of tilemaps. Data is loaded, but tilesets are not.
+[] Add transitions for switching scenes.
+
+
 Game.cs
-<pre>
+```csharp
 FSceneManager.Instance.SetScene(new SceneStartup());
-</pre>
+```
 
 SceneStartup.cs
-<pre>
+```csharp
 using System;
 using UnityEngine;
 using System.Collections;
@@ -17,25 +23,20 @@ using System.Collections.Generic;
 
 public class SceneStartup : FScene
 {
-  FLayerParallax mLayerParallax;
-	LayerStartup mLayer;
-	
-	public SceneStartup()
-	{
-		// Set the scene as the parent, set the scroll direction, and pick the two scrolling images from a loaded atlas.
-		mLayerParallax = new FLayerParallax(this, ScrollDirection.Down, "Background.png", "Background.png");
-		this.AddChild(mLayerParallax);
+    FLayer mLayer;
+    
+    public SceneStartup()
+    {
+		mPaused = false;
 		
 		mLayer = new LayerStartup(this);
-		this.AddChild(mLayer);;
-		
-		mPaused = false;
-	}
+        this.AddChild(mLayer);
+    }
 }
-</pre>
+```
 
 LayerStartup.cs
-<pre>
+```csharp
 using System;
 using UnityEngine;
 using System.Collections;
@@ -43,20 +44,22 @@ using System.Collections.Generic;
 
 public class LayerStartup : FLayer
 {
-  
-	
 	public LayerStartup(FScene _parent) : base(_parent)
-	{
+    {
 		
-	}
+    }
 	
-	override protected void HandleUpdate()
+	override public void OnEnter ()
 	{
-		if(mParent.Paused)
-			return;
-		
-		base.HandleUpdate();
 		
 	}
+    
+    override public void OnUpdate()
+    {
+        if(mParent.Paused)
+            return;
+		
+		FSceneManager.Instance.SetScene(new SceneGame());
+    }
 }
-</pre>
+```
