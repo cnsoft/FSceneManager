@@ -33,4 +33,39 @@ public class FScene : FContainer
 	{
 		mName = _name;
 	}
+	
+	override public void HandleAddedToStage()
+	{
+		base.HandleAddedToStage();;
+		Futile.instance.SignalUpdate += OnUpdate;
+		
+		this.OnEnter();
+		
+		//Debug.Log("+++ Scene Added To Stage: " + mName);
+	}
+
+	override public void HandleRemovedFromStage()
+	{
+		this.OnExit();
+		
+		Futile.instance.SignalUpdate -= OnUpdate;
+		base.HandleRemovedFromStage();
+		
+		//Debug.Log("--- Scene Removed From Stage: " + mName);
+	}
+	
+	virtual public void OnUpdate ()
+	{
+		
+	}
+	
+	virtual public void OnEnter()
+	{
+		
+	}
+	
+	virtual public void OnExit()
+	{
+		
+	}
 }

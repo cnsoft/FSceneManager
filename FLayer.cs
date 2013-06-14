@@ -21,6 +21,9 @@ public class FLayer : FContainer, FMultiTouchableInterface
 		get { return mParent; }
 		set { mParent = value; }
 	}
+	
+	//public delegate void LayerSignalDelegate();
+	//public event LayerSignalDelegate SignalUpdate;
 
 	public FLayer (FScene _parent)
 	{
@@ -31,33 +34,40 @@ public class FLayer : FContainer, FMultiTouchableInterface
 	{
 		base.HandleAddedToStage();
 		Futile.touchManager.AddMultiTouchTarget(this);
-		Futile.instance.SignalUpdate += Update;
+		Futile.instance.SignalUpdate += OnUpdate;
 		
-		this.Start();
+		this.OnEnter();
 		
-		Debug.Log("+++ Added To Stage");
+		//Debug.Log("+++ Layer Added To Stage");
 	}
 
 	override public void HandleRemovedFromStage()
 	{
+		this.OnExit();
+		
 		Futile.touchManager.RemoveMultiTouchTarget(this);
-		Futile.instance.SignalUpdate -= Update;
+		Futile.instance.SignalUpdate -= OnUpdate;
 		base.HandleRemovedFromStage();
 		
-		Debug.Log("--- Removed From Stage");
-	}
-
-	virtual public void Update ()
-	{
-		
+		//Debug.Log("--- Layer Removed From Stage");
 	}
 	
 	virtual public void HandleMultiTouch(FTouch[] touches)
 	{
 
 	}
+
+	virtual public void OnUpdate ()
+	{
+		//if(SignalUpdate != null) SignalUpdate();
+	}
 	
-	virtual public void Start()
+	virtual public void OnEnter()
+	{
+		
+	}
+	
+	virtual public void OnExit()
 	{
 		
 	}

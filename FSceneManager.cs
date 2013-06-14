@@ -16,10 +16,6 @@ using System.Collections.Generic;
 public sealed class FSceneManager : FContainer
 {
 	private static readonly FSceneManager mInstance = new FSceneManager();
-
-	private List<FScene> mScenes;
-	public static FStage mStage;
-
 	public static FSceneManager Instance
 	{
 		get
@@ -27,6 +23,9 @@ public sealed class FSceneManager : FContainer
 			return mInstance;
 		}
 	}
+	
+	private List<FScene> mScenes;
+	public static FStage mStage;
 
 	private FSceneManager() : base()
 	{
@@ -38,6 +37,10 @@ public sealed class FSceneManager : FContainer
 
 	public void PushScene(FScene _scene)
 	{
+		// Pause scenes underneath
+		foreach(FScene scene in mScenes)
+			scene.Paused = true;
+		
 		mScenes.Add(_scene);
 		this.AddChild(_scene);
 	}
@@ -50,6 +53,13 @@ public sealed class FSceneManager : FContainer
 			scene.RemoveFromContainer();
 
 			mScenes.Remove(scene);
+		}
+		
+		// Unpause scene
+		if(mScenes.Count > 0)
+		{
+			FScene scene = mScenes[mScenes.Count - 1];
+			scene.Paused = false;
 		}
 	}
 
