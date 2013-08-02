@@ -26,6 +26,8 @@ public sealed class FSceneManager : FContainer
 	
 	private List<FScene> mScenes;
 	public static FStage mStage;
+	
+	private FTransition mTransition;
 
 	private FSceneManager() : base()
 	{
@@ -33,11 +35,13 @@ public sealed class FSceneManager : FContainer
 		mStage = Futile.stage;
 
 		mStage.AddChild(this);
+		
+		mTransition = null;
 	}
-
-	public void PushScene(FScene _scene)
+	
+	public void PushScene(FScene _scene, bool _pause = false)
 	{
-		// Pause scenes underneath
+		if(_pause)
 		foreach(FScene scene in mScenes)
 			scene.Paused = true;
 		
@@ -70,4 +74,25 @@ public sealed class FSceneManager : FContainer
 
 		PushScene(_scene);
 	}
+	
+	public void SetSceneWithTransition(FScene _scene, FTransition _transition)
+	{
+		
+	}
+	
+	// Added after looking at Iron Pencil's implementation. Thanks!
+	private string GetSceneList()
+    {
+        string sceneList = "";
+		
+		int i = 1;
+		
+		foreach(FScene scene in mScenes)
+		{
+			sceneList += "[" + i + "]" + scene.Name + "\r\n";
+			i++;
+		}
+		
+        return sceneList;
+    }
 }

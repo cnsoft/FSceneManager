@@ -8,24 +8,12 @@
 - THE SOFTWARE.
 */
 
+using System;
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
-public class FCameraLayer : FLayer
+public class FObject 
 {
-	FNode mFollowObject;
-	
-	public FCameraLayer(FScene parent) : base(parent)
-	{
-		mFollowObject = null;
-	}
-	
-	override public void OnUpdate()
-	{
-		if(mFollowObject != null)
-		{
-			x = mFollowObject.x;
-			y = mFollowObject.y;
-		}
-	}
+
 }

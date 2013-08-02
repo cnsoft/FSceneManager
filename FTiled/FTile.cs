@@ -8,33 +8,21 @@
 - THE SOFTWARE.
 */
 
+using System;
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class FTile : FContainer
 {
-	protected FTileLayer mLayer;
-	
-	protected FSliceSprite mSprite;
-	
 	protected int mGID;
 	public int GID
 	{
 		get { return mGID; }
 	}
 	
-	public FTile(FTileLayer _layer, int _gid) : base()
+	public FTile(int _gid) : base()
 	{
-		mLayer = _layer;
-		mLayer.AddChild(this);
-		
 		mGID = _gid;
-		
-		SetClip();
-	}
-	
-	protected void SetClip()
-	{
-		
 	}
 }

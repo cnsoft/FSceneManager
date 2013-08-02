@@ -52,29 +52,77 @@ public class FTileLayer : FContainer
 		alpha = _opacity;
 		
 		mTiles = new FTile[mWidth, mHeight];
+		
 		ParseTiles(_tiles);
 	}
 	
 	protected void ParseTiles(List<int> _tiles)
 	{
-		int x = 0;
-		int y = 0;
+		int xPos = 0;
+		int yPos = 0;
 		
 		foreach(int tile in _tiles)
 		{
-			FTile newTile = new FTile(this, tile);
-			newTile.SetPosition(x * mMap.TileWidth, y * mMap.TileHeight);
-			mTiles[x, y] = newTile;
+			FTile newTile = new FTile(tile);
+			mTiles[xPos, yPos] = newTile;
 			
-			x++;
+			xPos++;
 			
-			if(x % mWidth == 0)
+			if(xPos % mWidth == 0)
 			{
-				x = 0;
-				y++;
+				xPos = 0;
+				yPos++;
 			}
 		}
 	}
+	
+	/* Unused Iso functions
+	
+	public void UpdateTilePositionsIso()
+	{
+		for(int yPos = 0; yPos < mHeight; yPos++)
+		{
+			for(int xPos = mWidth - 1; xPos >= 0; xPos--)
+			{
+				mTiles[xPos, yPos].SetPosition(OrthoToIso(xPos, yPos));
+			}
+		}
+	}
+	
+	private Vector2 OrthoToIso(int _x, int _y)
+	{
+		float x = (_x * mMap.TileWidth / 2) - (-_y * mMap.TileWidth / 2);
+		float y = (-_y * mMap.TileHeight / 2) + (_x * mMap.TileHeight / 2);
+		
+		return new Vector2(x, y);
+	}
+	
+	public void UpdateZOrder()
+	{
+		for(int yPos = 0; yPos < mHeight; yPos++)
+		{
+			for(int xPos = mWidth - 1; xPos >= 0; xPos--)
+			{
+				if(IsArrayInRange(xPos, yPos) && mTiles[xPos, yPos] != null)
+				{
+					mTiles[xPos, yPos].MoveToFront();
+				}
+			}
+		}	
+	}
+	
+	public bool IsArrayInRange(int _x, int _y)
+	{
+		if(_x < 0 || _y < 0)
+			return false;
+		
+		if( _x >= mWidth || _y >= mHeight)
+			return false;
+		
+		return true;
+	}
+	
+	*/
 	
 	protected void DebugTiles()
 	{

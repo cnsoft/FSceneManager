@@ -36,7 +36,7 @@ public class FScene : FContainer
 	
 	override public void HandleAddedToStage()
 	{
-		base.HandleAddedToStage();;
+		base.HandleAddedToStage();
 		Futile.instance.SignalUpdate += OnUpdate;
 		
 		this.OnEnter();
@@ -61,11 +61,11 @@ public class FScene : FContainer
 	
 	virtual public void OnEnter()
 	{
-		
+
 	}
-	
+
 	virtual public void OnExit()
 	{
-		
+
 	}
 }

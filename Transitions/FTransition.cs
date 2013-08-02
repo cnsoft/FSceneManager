@@ -1,4 +1,4 @@
-/*
+﻿/*
 - THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 - IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 - FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -10,22 +10,19 @@
 
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
-public class FCameraLayer : FLayer
+public class FTransition : FScene
 {
-	FNode mFollowObject;
-	
-	public FCameraLayer(FScene parent) : base(parent)
+	private float mDuration = 0.0f;
+	public float Duration
 	{
-		mFollowObject = null;
+		get { return mDuration; }
+		set { mDuration = value; }
 	}
 	
-	override public void OnUpdate()
+	public FTransition(float _duration)
 	{
-		if(mFollowObject != null)
-		{
-			x = mFollowObject.x;
-			y = mFollowObject.y;
-		}
+		
 	}
 }

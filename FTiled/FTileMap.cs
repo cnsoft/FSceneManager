@@ -17,6 +17,17 @@ public class FTileMap
 {
 	protected string mName;
 	
+	protected int mWidth;
+	public int Width
+	{
+		get { return mWidth; }
+	}
+	protected int mHeight;
+	public int Height
+	{
+		get { return mHeight; }
+	}
+	
 	protected int mTileWidth;
 	public int TileWidth
 	{
@@ -28,15 +39,10 @@ public class FTileMap
 		get { return mTileHeight; }
 	}
 	
-	protected int mWidth;
-	public int Width
+	protected string mOrientation;
+	public string Orientation
 	{
-		get { return mWidth; }
-	}
-	protected int mHeight;
-	public int Height
-	{
-		get { return mHeight; }
+		get { return mOrientation; }
 	}
 	
 	protected Dictionary<string, FTileLayer> mTileLayers;
@@ -64,11 +70,34 @@ public class FTileMap
 		
 		mName = "DEFAULTFORNOW";
 		
+		mOrientation = hash["orientation"].ToString();
+		
 		mTileWidth = int.Parse(hash["tilewidth"].ToString());
 		mTileHeight = int.Parse(hash["tileheight"].ToString());
 		
 		mWidth = int.Parse(hash["width"].ToString());
 		mHeight = int.Parse(hash["height"].ToString());
+		
+		List<object> tilesetsList = (List<object>)hash["tilesets"];
+		foreach(Dictionary<string,object> tilesetHash in tilesetsList)
+		{
+			string name = tilesetHash["name"].ToString();
+			string file = tilesetHash["image"].ToString();
+			
+			int firstgid = int.Parse(tilesetHash["firstgid"].ToString());
+			
+			int imagewidth = int.Parse(tilesetHash["imagewidth"].ToString());
+			int imageheight = int.Parse(tilesetHash["imageheight"].ToString());
+			
+			int tilewidth = int.Parse(tilesetHash["tilewidth"].ToString());
+			int tileheight = int.Parse(tilesetHash["tileheight"].ToString());
+			
+			int spacing = int.Parse(tilesetHash["spacing"].ToString());
+			int margin = int.Parse(tilesetHash["margin"].ToString());
+			
+			FTileSet tileset = new FTileSet(this, name, file, firstgid, imagewidth, imageheight, tilewidth, tileheight, margin, spacing);
+			mTileSets.Add(name, tileset);
+		}
 		
 		List<object> layersList = (List<object>)hash["layers"];
 		foreach(Dictionary<string,object> layerHash in layersList)
@@ -90,27 +119,6 @@ public class FTileMap
 			
 			FTileLayer layer = new FTileLayer(this, name, width, height, opacity, tiles);
 			mTileLayers.Add(name, layer);
-		}
-		
-		List<object> tilesetsList = (List<object>)hash["tilesets"];
-		foreach(Dictionary<string,object> tilesetHash in tilesetsList)
-		{
-			string name = tilesetHash["name"].ToString();
-			string file = tilesetHash["image"].ToString();
-			
-			int firstgid = int.Parse(tilesetHash["firstgid"].ToString());
-			
-			int imagewidth = int.Parse(tilesetHash["imagewidth"].ToString());
-			int imageheight = int.Parse(tilesetHash["imageheight"].ToString());
-			
-			int tilewidth = int.Parse(tilesetHash["tilewidth"].ToString());
-			int tileheight = int.Parse(tilesetHash["tileheight"].ToString());
-			
-			int spacing = int.Parse(tilesetHash["spacing"].ToString());
-			int margin = int.Parse(tilesetHash["margin"].ToString());
-			
-			FTileSet tileset = new FTileSet(name, file, firstgid, imagewidth, imageheight, tilewidth, tileheight, margin, spacing);
-			mTileSets.Add(name, tileset);
 		}
 		
 		Resources.UnloadAsset(mapAsset);
