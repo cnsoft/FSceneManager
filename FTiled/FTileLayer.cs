@@ -124,7 +124,7 @@ public class FTileLayer : FContainer
 	
 	*/
 	
-	protected void DebugTiles()
+	public void DebugTiles()
 	{
 		string debuginfo = "";
 		for(int y = 0; y < mHeight; y++)

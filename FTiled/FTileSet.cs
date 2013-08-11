@@ -18,6 +18,8 @@ public class FTileSet
 {
 	protected FTileMap mMap;
 	
+	protected Dictionary<int, FAtlasElement> mTileElements;
+	
 	protected string mName;
 	public string Name
 	{
@@ -57,6 +59,16 @@ public class FTileSet
 		get { return mTileHeight; }
 	}
 	
+	public int Columns
+	{
+		get { return mImageWidth / mTileWidth; }
+	}
+	
+	public int Rows
+	{
+		get { return mImageHeight / mTileHeight; }
+	}
+	
     protected int mMargin;
 	public int Margin
 	{
@@ -72,6 +84,8 @@ public class FTileSet
 	{
 		mMap = _map;
 		
+		mTileElements = new Dictionary<int, FAtlasElement>();
+		
 		mName = _name;
 		mFile = _file;
 		
@@ -85,11 +99,85 @@ public class FTileSet
 		
 		mMargin = _margin;
 		mSpacing = _spacing;
+		
+		CreateAtlas();
 	}
 	
+	
+	// Using jfleschler implementation of loading a tileset.
 	private void CreateAtlas()
 	{
-		Futile.atlasManager.LoadImage("Maps/" + mFile);
+		Futile.atlasManager.LoadImage("Maps/" + mName);
+		FAtlasElement originalElement = Futile.atlasManager.GetElementWithName("Maps/" + mName);
+		
+		Vector2 textureSize = originalElement.atlas.textureSize;
+		float scaleInverse = Futile.resourceScaleInverse;
+		
+		int gid = mFirstGID;
+		int tileCount = Rows * Columns;
+		
+		for(int i = 0; i < tileCount; i++)
+		{
+			FAtlasElement element = new FAtlasElement();
+			
+			element.name = gid.ToString();
+			element.isTrimmed = originalElement.isTrimmed;
+			element.atlas = originalElement.atlas;
+			element.atlasIndex = i;
+			
+			float frameX = (originalElement.uvRect.x * textureSize.x) - originalElement.sourceRect.x + ((i % Columns) * mTileWidth);
+			float frameY = (-1 * ((originalElement.uvRect.y * textureSize.y) - textureSize.y + originalElement.sourceRect.height)) - originalElement.sourceRect.y + ((i / Rows) * mTileHeight);
+			
+			float frameW = mTileWidth;
+			float frameH = mTileHeight;
+			
+			Rect uvRect = new Rect
+			(
+				frameX / textureSize.x,
+				((textureSize.y - frameY - frameH) / textureSize.y),
+				frameW / textureSize.x,
+				frameH / textureSize.y
+			);
+				
+			element.uvRect = uvRect;
+		
+			element.uvTopLeft.Set(uvRect.xMin,uvRect.yMax);
+			element.uvTopRight.Set(uvRect.xMax,uvRect.yMax);
+			element.uvBottomRight.Set(uvRect.xMax,uvRect.yMin);
+			element.uvBottomLeft.Set(uvRect.xMin,uvRect.yMin);
+
+			//the source size is the untrimmed size
+			element.sourcePixelSize.x = mTileWidth;
+			element.sourcePixelSize.y = mTileHeight;
+
+			element.sourceSize.x = element.sourcePixelSize.x * scaleInverse;	
+			element.sourceSize.y = element.sourcePixelSize.y * scaleInverse;
+
+			//this rect is the trimmed size and position relative to the untrimmed rect
+			float rectX = originalElement.sourceRect.x;
+			float rectY = originalElement.sourceRect.y;
+			float rectW = mTileWidth * scaleInverse;
+			float rectH = mTileHeight * scaleInverse;
+			
+			element.sourceRect = new Rect(rectX, rectY, rectW, rectH);
+			
+			mTileElements.Add(gid, element);
+			gid++;
+		}
+	}
+	
+	public FAtlasElement GetTileElement(int _id)
+	{
+		if(mTileElements.ContainsKey(_id))
+			return mTileElements[_id];
+		
+		throw new FutileException("Tile ID not found [" + _id + "] in " + mName);
+	}
+	
+	public void DebugTileIDs()
+	{
+		foreach(var element in mTileElements)
+			Debug.Log("Tile ID: " + element.Key);
 	}
 }
 

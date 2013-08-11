@@ -15,18 +15,18 @@ using System.Collections.Generic;
 
 public class FScene : FContainer
 {
-	protected bool mPaused;
-	public bool Paused
-	{
-		get { return mPaused; }
-		set { mPaused = value; }
-	}
-	
 	protected string mName;
 	public string Name
 	{
 		get { return mName; }
 		set { mName = value; }
+	}
+	
+	protected bool mPaused;
+	public bool Paused
+	{
+		get { return mPaused; }
+		set { mPaused = value; }
 	}
 
 	public FScene (string _name = "Default") : base()
@@ -40,8 +40,6 @@ public class FScene : FContainer
 		Futile.instance.SignalUpdate += OnUpdate;
 		
 		this.OnEnter();
-		
-		//Debug.Log("+++ Scene Added To Stage: " + mName);
 	}
 
 	override public void HandleRemovedFromStage()
@@ -50,8 +48,6 @@ public class FScene : FContainer
 		
 		Futile.instance.SignalUpdate -= OnUpdate;
 		base.HandleRemovedFromStage();
-		
-		//Debug.Log("--- Scene Removed From Stage: " + mName);
 	}
 	
 	virtual public void OnUpdate ()
@@ -67,5 +63,10 @@ public class FScene : FContainer
 	virtual public void OnExit()
 	{
 
+	}
+	
+	public override string ToString()
+	{
+		return "Name: " + mName + " - Paused: " + mPaused;
 	}
 }
